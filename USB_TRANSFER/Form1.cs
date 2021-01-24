@@ -34,6 +34,9 @@ namespace USB_TRANSFER
         private const int DBT_DEVICEREMOVECOMPLETE = 0x8004;
         private const int DBT_DEVTYP_VOLUME = 0x00000002;
 
+        // selected USB INFO
+        public string usbPath;
+
         public Form1()
         {
             InitializeComponent();
@@ -73,70 +76,108 @@ namespace USB_TRANSFER
 
         }
 
-        public static void PrintUsbDevices()
+        // SEARCH DEVICE INFO
+        static List<USBDeviceInfo> GetUSBDevices()
         {
-            IList<ManagementBaseObject> usbDevices = GetUsbDevices();
+            List<USBDeviceInfo> devices = new List<USBDeviceInfo>();
 
-            foreach (ManagementBaseObject usbDevice in usbDevices)
+            ManagementObjectCollection collection;
+            using (var searcher = new ManagementObjectSearcher(@"SELECT * FROM Win32_PnPEntity where DeviceID Like ""USB%"""))
+                collection = searcher.Get();
+
+            foreach (var device in collection)
             {
-                Console.WriteLine("----- DEVICE -----");
-                foreach (var property in usbDevice.Properties)
-                {
-                    Console.WriteLine(string.Format("{0}: {1}", property.Name, property.Value));
-                }
-                Console.WriteLine("------------------");
-            }
-        }
-
-        public static IList<ManagementBaseObject> GetUsbDevices()
-        {
-            IList<string> usbDeviceAddresses = LookUpUsbDeviceAddresses();
-
-            List<ManagementBaseObject> usbDevices = new List<ManagementBaseObject>();
-
-            foreach (string usbDeviceAddress in usbDeviceAddresses)
-            {
-                // query MI for the PNP device info
-                // address must be escaped to be used in the query; luckily, the form we extracted previously is already escaped
-                ManagementObjectCollection curMoc = QueryMi("Select * from Win32_PnPEntity where PNPDeviceID = " + usbDeviceAddress);
-                foreach (ManagementBaseObject device in curMoc)
-                {
-                    usbDevices.Add(device);
-                }
+                devices.Add(new USBDeviceInfo(
+                    (string)device.GetPropertyValue("DeviceID"),
+                    (string)device.GetPropertyValue("PNPDeviceID"),
+                    (string)device.GetPropertyValue("Description")
+                ));
             }
 
-            return usbDevices;
-        }
-
-        public static IList<string> LookUpUsbDeviceAddresses()
-        {
-            // this query gets the addressing information for connected USB devices
-            ManagementObjectCollection usbDeviceAddressInfo = QueryMi(@"Select * from Win32_USBControllerDevice");
-
-            List<string> usbDeviceAddresses = new List<string>();
-
-            foreach(var device in usbDeviceAddressInfo)
-            {
-                string curPnpAddress = (string)device.GetPropertyValue("Dependent");
-                // split out the address portion of the data; note that this includes escaped backslashes and quotes
-                curPnpAddress = curPnpAddress.Split(new String[] { "DeviceID=" }, 2, StringSplitOptions.None)[1];
-
-                usbDeviceAddresses.Add(curPnpAddress);
-            }
-
-            return usbDeviceAddresses;
+            collection.Dispose();
+            return devices;
         }
 
         // btn_chkDevice 클릭 이벤트
-        private void Btn_chkDevice_Click(object sender, EventArgs e)
+        private void btn_connectInfo_Click(object sender, EventArgs e)
         {
             var usbDevices = GetUSBDevices();
 
+            listView1.Items.Clear();
+
             foreach (var usbDevice in usbDevices)
             {
+                // console log
                 Console.WriteLine("Device ID: {0}, PNP Device ID: {1}, Description: {2}",
                     usbDevice.DeviceID, usbDevice.PnpDeviceID, usbDevice.Description);
-            }
+
+                // listView
+                string[] info = new string[] { usbDevice.DeviceID, usbDevice.PnpDeviceID, usbDevice.Description };
+                ListViewItem tmpItem = new ListViewItem(info);
+
+                listView1.Items.Add(tmpItem);
+             }
         }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // device 정보 하나만 선택 가능
+            bool selected = listView1.SelectedItems.Count > 0;
+
+            // 다중 선택 -> 함수 종료
+            if (selected == false) return;
+
+            ListViewItem lvi = listView1.SelectedItems[0];
+
+            textBox1.Text = "";
+
+            textBox1.Text += $"Device ID :: {lvi.SubItems[0].Text}\r\n";
+            textBox1.Text += $"PNP Device ID :: {lvi.SubItems[1].Text}\r\n";
+            textBox1.Text += $"Description :: {lvi.SubItems[2].Text}\r\n";
+
+            usbPath = d
+        }
+
+        // file browser 오픈
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var fileContent = string.Empty;
+            var filePath = string.Empty;
+
+            openFileDialog1.InitialDirectory = "c:\\";
+            openFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            openFileDialog1.FilterIndex = 2;
+            openFileDialog1.RestoreDirectory = true;
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                //Get the path of specified file
+                filePath = openFileDialog1.FileName;
+
+                //Read the contents of the file into a stream
+                var fileStream = openFileDialog1.OpenFile();
+
+                using (StreamReader reader = new StreamReader(fileStream))
+                {
+                    fileContent = reader.ReadToEnd();
+                }
+            }
+
+            Console.WriteLine($"File Path : {filePath}\n");
+        }
+    }
+
+    // DEVICE INFO CLASS
+    class USBDeviceInfo
+    {
+        public USBDeviceInfo(string deviceID, string pnpDeviceID, string description)
+        {
+            this.DeviceID = deviceID;
+            this.PnpDeviceID = pnpDeviceID;
+            this.Description = description;
+        }
+        public string DeviceID { get; private set; }
+        public string PnpDeviceID { get; private set; }
+        public string Description { get; private set; }
     }
 }

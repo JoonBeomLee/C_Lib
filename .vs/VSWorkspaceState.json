@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\USB_SERIAL_TRANSFER",
+    "\\USB_TRANSFER"
   ],
-  "SelectedNode": "\\USB_TRANSFER",
+  "SelectedNode": "\\USB_TRANSFER\\Form1.cs",
   "PreviewInSolutionExplorer": false
 }

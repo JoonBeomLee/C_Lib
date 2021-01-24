@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{72C12053-B555-4938-963D-3D203E4F1F84}</ProjectGuid>
+    <ProjectGuid>{82945EAD-EF93-4978-A811-27B59F346249}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>USB_TRANSFER</RootNamespace>
     <AssemblyName>USB_TRANSFER</AssemblyName>
@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
