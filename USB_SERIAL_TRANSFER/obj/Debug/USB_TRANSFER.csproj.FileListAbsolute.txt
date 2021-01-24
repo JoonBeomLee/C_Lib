@@ -1,0 +1,10 @@
+F:\공부\C_LIB\USB_TRANSFER\obj\Debug\USB_TRANSFER.csprojAssemblyReference.cache
+F:\공부\C_LIB\USB_TRANSFER\obj\Debug\USB_TRANSFER.Form1.resources
+F:\공부\C_LIB\USB_TRANSFER\obj\Debug\USB_TRANSFER.Properties.Resources.resources
+F:\공부\C_LIB\USB_TRANSFER\obj\Debug\USB_TRANSFER.csproj.GenerateResource.cache
+F:\공부\C_LIB\USB_TRANSFER\obj\Debug\USB_TRANSFER.csproj.CoreCompileInputs.cache
+F:\공부\C_LIB\USB_TRANSFER\bin\Debug\USB_TRANSFER.exe.config
+F:\공부\C_LIB\USB_TRANSFER\bin\Debug\USB_TRANSFER.exe
+F:\공부\C_LIB\USB_TRANSFER\bin\Debug\USB_TRANSFER.pdb
+F:\공부\C_LIB\USB_TRANSFER\obj\Debug\USB_TRANSFER.exe
+F:\공부\C_LIB\USB_TRANSFER\obj\Debug\USB_TRANSFER.pdb
