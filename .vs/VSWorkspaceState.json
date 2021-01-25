@@ -1,9 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\USB_SERIAL_TRANSFER",
-    "\\USB_TRANSFER"
+    "\\TCP_RECEIVE_TRANSFER",
+    "\\TCP_SEND_TRANSFER"
   ],
-  "SelectedNode": "\\USB_TRANSFER\\Form1.cs",
+  "SelectedNode": "\\TCP_SEND_TRANSFER\\TCP_SEND_TRANSFER.sln",
   "PreviewInSolutionExplorer": false
 }
